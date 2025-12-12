@@ -11,10 +11,17 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: function(origin, callback) {
+    if (!origin || origin === 'http://localhost:3000' || origin === 'https://your-frontend-domain.com') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
+  
 
 
 const PORT = process.env.PORT;
